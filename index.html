@@ -1,7 +1,183 @@
-echo "# GALLERY" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/vathiaview/GALLERY.git
-git push -u origin main
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Gallery</title>
+
+<style>
+body{
+    margin:0;
+    padding:20px;
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+}
+
+h1{
+    text-align:center;
+}
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));
+    gap:15px;
+    max-width:1200px;
+    margin:auto;
+}
+
+.gallery img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.gallery img:hover{
+    transform:scale(1.05);
+}
+
+/* Modal */
+.modal{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.95);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal img{
+    max-width:90%;
+    max-height:85%;
+    border-radius:10px;
+}
+
+.close{
+    position:absolute;
+    top:20px;
+    right:30px;
+    color:white;
+    font-size:40px;
+    cursor:pointer;
+}
+
+.prev,
+.next{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    color:white;
+    font-size:50px;
+    cursor:pointer;
+    padding:15px;
+    user-select:none;
+}
+
+.prev{
+    left:20px;
+}
+
+.next{
+    right:20px;
+}
+
+.prev:hover,
+.next:hover,
+.close:hover{
+    opacity:0.7;
+}
+</style>
+</head>
+<body>
+
+<h1>Gallery Φωτογραφιών</h1>
+
+<div class="gallery">
+    <img src="images/photo1.jpg" alt="">
+    <img src="images/photo2.jpg" alt="">
+    <img src="images/photo3.jpg" alt="">
+    <img src="images/photo4.jpg" alt="">
+    <img src="images/photo5.jpg" alt="">
+    <img src="images/photo6.jpg" alt="">
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+    <span class="close">&times;</span>
+
+    <span class="prev">&#10094;</span>
+    <img id="modalImage" src="">
+    <span class="next">&#10095;</span>
+</div>
+
+<script>
+const galleryImages = document.querySelectorAll('.gallery img');
+const modal = document.getElementById('modal');
+const modalImage = document.getElementById('modalImage');
+const closeBtn = document.querySelector('.close');
+const prevBtn = document.querySelector('.prev');
+const nextBtn = document.querySelector('.next');
+
+let currentIndex = 0;
+
+function showImage(index){
+    currentIndex = index;
+    modalImage.src = galleryImages[index].src;
+}
+
+galleryImages.forEach((img,index)=>{
+    img.addEventListener('click',()=>{
+        modal.style.display='flex';
+        showImage(index);
+    });
+});
+
+closeBtn.addEventListener('click',()=>{
+    modal.style.display='none';
+});
+
+prevBtn.addEventListener('click',()=>{
+    currentIndex--;
+    if(currentIndex < 0){
+        currentIndex = galleryImages.length - 1;
+    }
+    showImage(currentIndex);
+});
+
+nextBtn.addEventListener('click',()=>{
+    currentIndex++;
+    if(currentIndex >= galleryImages.length){
+        currentIndex = 0;
+    }
+    showImage(currentIndex);
+});
+
+window.addEventListener('keydown',(e)=>{
+    if(modal.style.display === 'flex'){
+        if(e.key === 'ArrowLeft'){
+            prevBtn.click();
+        }
+        if(e.key === 'ArrowRight'){
+            nextBtn.click();
+        }
+        if(e.key === 'Escape'){
+            modal.style.display='none';
+        }
+    }
+});
+
+modal.addEventListener('click',(e)=>{
+    if(e.target === modal){
+        modal.style.display='none';
+    }
+});
+</script>
+
+</body>
+</html>
